@@ -64,14 +64,13 @@ exports.postLogin = (req, res, next) => {
                 email: email,
                 password: password
             },
-            validationErrors: error.array()
+            validationErrors: errors.array()
         });
     }
 
     User.findOne({ email: email })
         .then(user => {
             if (!user) {
-                req.flash('error', '');
                 return res.status(422).render('auth/login', {
                     path: '/login',
                     pageTitle: 'Login',
@@ -94,7 +93,6 @@ exports.postLogin = (req, res, next) => {
                             res.redirect('/');
                         });
                     }
-                    //req.flash('error', 'Invalid email or password.');
                     return res.status(422).render('auth/login', {
                         path: '/login',
                         pageTitle: 'Login',
@@ -111,7 +109,11 @@ exports.postLogin = (req, res, next) => {
                     res.redirect('/login');
                 });
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            const error = new Error(err)
+            error.httpStatusCode = 500
+            return next(error)
+        });
 };
 
 exports.postSignup = (req, res, next) => {
@@ -148,13 +150,15 @@ exports.postSignup = (req, res, next) => {
             res.redirect('/login');
             // return transporter.sendMail({
             //   to: email,
-            //   from: 'shop@node-complete.com',
+            //   from: 'shahriar.uchchash@gmail.com',
             //   subject: 'Signup succeeded!',
             //   html: '<h1>You successfully signed up!</h1>'
             // });
         })
         .catch(err => {
-            console.log(err);
+            const error = new Error(err)
+            error.httpStatusCode = 500
+            return next(error);
         });
 };
 
@@ -200,7 +204,7 @@ exports.postReset = (req, res, next) => {
                 res.redirect('/');
                 transporter.sendMail({
                     to: req.body.email,
-                    from: 'shop@node-complete.com',
+                    from: 'shahriar.uchchash@gmail.com',
                     subject: 'Password reset',
                     html: `
             <p>You requested a password reset</p>
@@ -209,7 +213,9 @@ exports.postReset = (req, res, next) => {
                 });
             })
             .catch(err => {
-                console.log(err);
+                const error = new Error(err)
+                error.httpStatusCode = 500
+                return next(error);
             });
     });
 };
@@ -233,7 +239,9 @@ exports.getNewPassword = (req, res, next) => {
             });
         })
         .catch(err => {
-            console.log(err);
+            const error = new Error(err)
+            error.httpStatusCode = 500
+            return next(error);
         });
 };
 
@@ -262,6 +270,8 @@ exports.postNewPassword = (req, res, next) => {
             res.redirect('/login');
         })
         .catch(err => {
-            console.log(err);
+            const error = new Error(err)
+            error.httpStatusCode = 500
+            return next(error);
         });
 };
