@@ -252,3 +252,17 @@ form {
     background: rgb(224, 83, 83);
     color: rgb(247, 241, 241);
 }
+
+.pagination {
+    text-align: center;
+    text-decoration: none;
+    color: #00695c;
+    border: 1px solid #00695c;
+    width: 20%;
+}
+
+.pagination a:hover,
+.pagination a:active {
+    background: #00695c;
+    color: aqua;
+}
